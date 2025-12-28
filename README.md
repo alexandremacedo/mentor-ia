@@ -1,98 +1,175 @@
+<h3 align="center">
+    Mentor IA - A basic agent
+</h3>
+
+<h4 align="center">
+  NestJS + Docker + Typescript + Ports & Adapters
+</h4>
+</br>
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/AlexandreMacedo/mentor-ia?color=%2304D361">
+
+  <a href="https://github.com/AlexandreMacedo">
+    <img alt="Made by Alexandre" src="https://img.shields.io/badge/made%20by-Alexandre-%2304D361">
+  </a>
+
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-%2304D361">
+
+  <a href="https://github.com/AlexandreMacedo/user/stargazers">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/AlexandreMacedo/mentor-ia?style=social">
+  </a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<p align="center">
+  <a href="#needed">Needed</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#how-to-use">How to use</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#endpoints">Endpoints</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#technical-decisions">Technical Decisions</a>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# mentor-ia
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This project was built with NestJS and TypeScript to book trips
 
-## Project setup
+## Needed
+
+- Git (https://git-scm.com/)
+- Node (https://nodejs.org/en/)
+- Docker (https://www.docker.com/products/docker-desktop)
+
+## How to use
+
+To clone and run this application, you'll need [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) or higher installed on your computer. From your command line:
+
+Cloning
 
 ```bash
+# Clone this repository
+$ git clone https://github.com/alexandremacedo/mentor-ia.git
+
+# Go into the repository
+$ cd mentor-ia
+```
+
+To run in dev mode
+
+```bash
+# Install all dependencies
 $ npm install
 ```
 
-## Compile and run the project
+To run with containers
 
 ```bash
-# development
-$ npm run start
+# Create and start the production server
+$ docker compose up --build -d
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Server is running at http://localhost:3000
 ```
 
-## Run tests
+To easily test the api requests
+```bash
+# You will need to download the REST Client extension
+# And access the path /api/counsel.http
+```
+
+To start the database
+
+```sql
+# Creating table
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE IF NOT EXISTS memories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL,
+  content TEXT NOT NULL,
+  embedding VECTOR(1536)
+);
+
+# Index with ivfflat is usefull after insert multiple memories
+CREATE INDEX IF NOT EXISTS memories_embedding_idx
+ON memories
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);
+```
+
+To run the tests
 
 ```bash
-# unit tests
+# Running all tests
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
+# Running test coverage
 $ npm run test:cov
 ```
 
-## Deployment
+## Endpoints
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Routes:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+| Method | Endpoint                | Controller                | Action           |
+| ------ | ----------------------- | ------------------------- | ---------------- |
+| POST   | /counsel                | \counsel.controller       | create a counsel |
+| GET    | /health                 | \health.controller        | check service    |
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+## Technical Decisions
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+This project was designed with **production-grade concerns** in mind, prioritizing maintainability, resilience, and scalability over experimentation or framework-driven design.
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+### Architecture: Ports & Adapters (Hexagonal)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+The core domain is fully isolated from external frameworks and providers using **Ports & Adapters (Hexagonal Architecture)**.
 
-## Support
+All integrations (LLMs, embeddings, persistence) are implemented behind explicit interfaces, enabling:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Provider replacement without touching business logic  
+- Clean unit testing with fakes, stubs, and mocks  
+- Long-term evolution without architectural rewrites  
 
-## Stay in touch
+The domain layer contains no framework dependencies and no infrastructure concerns.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+### LLM Integration: Backoff & Fallback
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+LLM access is handled through a **resilient adapter** that composes two key strategies:
+
+- **Exponential backoff** for transient failures (timeouts, network instability)
+- **Fallback strategy** to switch providers when the primary LLM is unavailable or degraded
+
+This approach ensures:
+- Predictable latency
+- Controlled retry behavior
+- High availability without leaking infrastructure logic into the domain layer
+
+---
+
+### Embeddings & Semantic Memory with pgvector
+
+Semantic memory is implemented using **PostgreSQL + pgvector**, keeping the stack simple and production-proven.
+
+Key decisions:
+- Embeddings are generated through a dedicated **Embedding Port**
+- Vectors are stored and queried using **cosine similarity**
+- Memory retrieval is transparent to the use case layer
+
+This enables contextual reasoning while avoiding the operational complexity of specialized vector databases.
+
+---
+
+### NestJS as Application Shell
+
+NestJS is used strictly as an **application shell**, responsible for:
+
+- Dependency injection
+- HTTP layer
+- Module composition
+
+Business logic remains **framework-agnostic**, allowing the system to be tested, refactored, and evolved independently of NestJS or any specific runtime framework.
+
+# License
+
+The mentor-ia is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
