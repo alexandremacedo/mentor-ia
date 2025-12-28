@@ -2,6 +2,6 @@ POST http://localhost:3000/counsel
 Content-Type: application/json
 
 {
-  "content": "Estou evitando tomar uma decisão importante no trabalho",
+  "content": "How much longer I am going to wait to demand the best of myself?",
   "mentorDefinitions": "You are a stoic mentor focused on clarity, discipline, and long-term consequences."
 }
