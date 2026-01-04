@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { EmbeddingPort } from "@/domain/services/ports/embedding.port";
-import { MemoryPort } from "@/domain/services/ports/memory.port";
+import { EmbeddingPort } from "@/domain/ports/embedding.port";
+import { MemoryPort } from "@/domain/ports/memory.port";
 import { DataSource } from "typeorm";
 
 @Injectable()

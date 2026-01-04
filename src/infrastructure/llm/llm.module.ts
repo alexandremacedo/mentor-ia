@@ -1,21 +1,21 @@
 import { Module } from "@nestjs/common";
-import { LlmPort } from "@/domain/services/ports/llm.port";
-import { OpenaiLlmAdapter } from "@/infrastructure/llm/openai/openai-llm.adapter";
-import { EmbeddingPort } from "@/domain/services/ports/embedding.port";
-import { OpenaiEmbeddingAdapter } from "@/infrastructure/llm/openai/openai-embedding.adapter";
-import { BackoffPolicy } from "@/infrastructure/common/backoff.policy";
+import { LlmPort } from "@/domain/ports/llm.port";
+import { EmbeddingPort } from "@/domain/ports/embedding.port";
+import { BackoffPolicy } from "@/infrastructure/common/policies/backoff.policy";
 import { ResilientLlmAdapter } from "./resilient-llm.adapter";
+import { FakeLlmAdapter } from "./fakes/fake-llm.adapter";
+import { FakeEmbeddingAdapter } from "./fakes/fake-embedding.adapter";
 
 @Module({
     providers: [
         BackoffPolicy,
         {
             provide: "PRIMARY_LLM",
-            useClass: OpenaiLlmAdapter,
+            useClass: FakeLlmAdapter,
         },
         {
             provide: "FALLBACK_LLM",
-            useClass: OpenaiLlmAdapter,
+            useClass: FakeLlmAdapter,
         },
         {
             provide: LlmPort,
@@ -23,7 +23,7 @@ import { ResilientLlmAdapter } from "./resilient-llm.adapter";
         },
         {
             provide: EmbeddingPort,
-            useClass: OpenaiEmbeddingAdapter
+            useClass: FakeEmbeddingAdapter
         },
     ],
     exports: [LlmPort, EmbeddingPort]

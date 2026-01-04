@@ -1,6 +1,6 @@
-import { LlmPort } from "@/domain/services/ports/llm.port";
+import { LlmPort, LlmResponse } from "@/domain/ports/llm.port";
 import { Inject, Injectable } from "@nestjs/common";
-import { BackoffPolicy } from "@/infrastructure/common/backoff.policy";
+import { BackoffPolicy } from "@/infrastructure/common/policies/backoff.policy";
 
 @Injectable()
 export class ResilientLlmAdapter implements LlmPort {
@@ -12,11 +12,9 @@ export class ResilientLlmAdapter implements LlmPort {
         private readonly backoffPolicy: BackoffPolicy,
     ) { }
 
-    async generate(prompt: string): Promise<string> {
+    async generate(prompt: string): Promise<LlmResponse> {
         try {
-            return await this.backoffPolicy.execute(() =>
-                this.primary.generate(prompt),
-            );
+            return await this.backoffPolicy.execute(() => this.primary.generate(prompt));
         } catch {
             return this.fallback.generate(prompt);
         }

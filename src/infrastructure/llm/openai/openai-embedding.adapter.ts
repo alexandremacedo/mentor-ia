@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { EmbeddingPort } from "@/domain/services/ports/embedding.port";
+import { EmbeddingPort } from "@/domain/ports/embedding.port";
 
 export class OpenaiEmbeddingAdapter implements EmbeddingPort {
     constructor(private readonly openai: OpenAI = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })) { }

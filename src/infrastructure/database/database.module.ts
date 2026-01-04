@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TokenUsageTypeOrmEntity } from '../persistence/typeorm/entities/token-usage.typeorm.entity';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                 url: configService.get('database.url'),
                 synchronize: false,
                 autoLoadEntities: false,
+                entities: [TokenUsageTypeOrmEntity],
                 logging: false,
                 extra: {
                     max: configService.get("database.poolMax"),
