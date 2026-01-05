@@ -22,7 +22,7 @@ export class BackoffPolicy {
         attempt++;
 
         if (attempt > retries) {
-          Logger.error("BackoffPolicy.execute", `attempt: ${attempt}, delay: ${delay}`)
+          Logger.error("BackoffPolicy.execute", `attempt: ${attempt}, delay: ${delay}, message: ${error.message}`)
           throw error;
         }
 
