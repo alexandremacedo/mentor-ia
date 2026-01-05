@@ -30,7 +30,7 @@
 
 # mentor-ia
 
-This project was built with NestJS and TypeScript to book trips
+This project use a Reflection-based Retrieval-Augmented Generation (RAG) approach, where previous LLM outputs are stored as long-term memory and selectively retrieved to provide contextual continuity across interactions.
 
 ## Needed
 
@@ -87,11 +87,22 @@ CREATE TABLE IF NOT EXISTS memories (
   embedding VECTOR(1536)
 );
 
+CREATE TABLE token_usage (
+    id UUID PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    used_tokens INTEGER NOT NULL DEFAULT 0,
+    limit_tokens INTEGER NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP NOT NULL DEFAULT now(),
+    CONSTRAINT uq_token_usage_user UNIQUE (user_id)
+);
+
 # Index with ivfflat is usefull after insert multiple memories
 CREATE INDEX IF NOT EXISTS memories_embedding_idx
 ON memories
 USING ivfflat (embedding vector_cosine_ops)
 WITH (lists = 100);
+
 ```
 
 To run the tests
